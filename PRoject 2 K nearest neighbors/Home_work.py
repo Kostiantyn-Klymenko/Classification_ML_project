@@ -5,31 +5,28 @@ import numpy as np
 
 data_gender = pd.read_csv('corrected_data.csv')  
 
-loaded_model_gender = joblib.load('gender_model.pkl')
+loaded_model_gender = joblib.load('svm_model.pkl')
+
+st.title(" Preduction for Gender based on many features")
 
 
-enter_diameter = st.slider('Diameter', min_value=min(data_gender['Diameter']), max_value=max(data_gender['Diameter']), value=np.mean(data_gender['Diameter'][0]))
+# Create input fields for the features
 
-enter_shucked_weight = st.slider('Shucked Weight', min_value=min(data_gender['ShuckedWeight']), max_value=max(data_gender['ShuckedWeight']), value=data_gender['ShuckedWeight'][0])
+#svm_model.predict([[ 0.74  ,  0.595 ,  0.19  ,  2.3235,  1.1495,  0.5115,  0.505 ,11.    ]])
+
+st.form("Enter the features for prediction:")
+feature1 = st.number_input("Feature 1", value=0.74)
+feature2 = st.number_input("Feature 2", value=0.595)
+feature3 = st.number_input("Feature 3", value=0.19)
+feature4 = st.number_input("Feature 4", value=2.3235)
+feature5 = st.number_input("Feature 5", value=1.1495)
+feature6 = st.number_input("Feature 6", value=0.5115)
+feature7 = st.number_input("Feature 7", value=0.505)
+feature8 = st.number_input("Feature 8", value=11.0)
+if st.button("Predict"):
+    input_data = np.array([[feature1, feature2, feature3, feature4, feature5, feature6, feature7, feature8]])
+    prediction = loaded_model_gender.predict(input_data)
+    st.write(f"Predicted result: {prediction[0]}")
 
 
-st.write("Current Data Provided:")
-st.write(f"Diameter: {enter_diameter},  Shucked Weight: {enter_shucked_weight}")
-st.write("Model Prediction:")
-prediction_gender = loaded_model_gender.predict([[enter_diameter, enter_shucked_weight]])
 
-
-import matplotlib.pyplot as plt
-fig, ax = plt.subplots()
-ax.scatter(data_gender['Diameter'], data_gender['ShuckedWeight'], c=data_gender['species'].astype('category').cat.codes, cmap='viridis', alpha=0.5)
-ax.scatter(enter_diameter, enter_shucked_weight, color='red', s=100, marker='x', label=f'Gender: {prediction_gender[0]}')
-ax.set_xlabel('Diameter')
-ax.set_ylabel('Shucked Weight')
-ax.set_title('Penguin Gender by Diameter and Shucked Weight')
-# fix axis limits
-ax.set_xlim(min(data_gender['Diameter']) - 5, max(data_gender['Diameter']) + 5)
-ax.set_ylim(min(data_gender['ShuckedWeight']) - 5, max(data_gender['ShuckedWeight']) + 5)
-ax.legend()
-st.pyplot(fig)
-
-st.write(f"**Predicted Gender: {prediction_gender[0]}**")
