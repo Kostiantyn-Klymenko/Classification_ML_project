@@ -3,9 +3,9 @@ import joblib
 import pandas as pd
 import numpy as np
 
-data_gender = pd.read_csv('corrected_data.csv')  
+data_gender = pd.read_csv(r'Project 2 K nearest neighbors\corrected_data.csv')  
 
-loaded_model_gender = joblib.load('svm_model.pkl')
+loaded_model_gender = joblib.load(r'Project 2 K nearest neighbors\svm_model.pkl')
 
 st.title(" Preduction for Gender based on many features")
 
